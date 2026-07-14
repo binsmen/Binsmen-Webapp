@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BINSMEN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d12;
+    --panel:#12151c;
+    --panel-alt:#151920;
+    --border:#242933;
+    --text:#e7e9ee;
+    --text-soft:#8890a0;
+    --teal:#2dd9c4;
+    --teal-dim:#1a9e8f;
+    --teal-glow:rgba(45,217,196,0.16);
+    --orange:#f2711c;
+    --orange-glow:rgba(242,113,28,0.16);
+    --danger:#f16565;
+    --danger-dark:#c23f3f;
+    --ok:#2dd9a8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(45,217,196,0.10), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(242,113,28,0.08), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Oswald',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+
+  .wrap{max-width:960px;margin:0 auto;}
+
+  /* ---- HEADER PANEL ---- */
+  .crate-top{
+    border:1px solid var(--border);
+    border-radius:14px 14px 0 0;
+    background:linear-gradient(150deg, var(--panel) 0%, #0f1319 100%);
+    padding:22px 24px 20px;
+    position:relative;
+  }
+
+  .brand-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .brand{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(40px,8vw,72px);
+    letter-spacing:2px;
+    color:var(--text);
+    text-shadow:0 0 24px var(--teal-glow);
+    line-height:0.9;
+  }
+  .brand-sub{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    border:1px solid var(--teal-dim);
+    background:var(--teal-glow);
+    border-radius:6px;
+    padding:4px 10px;
+  }
+  .heading-strip{
+    margin-top:16px;
+    background:var(--teal);
+    color:#06231f;
+    display:inline-block;
+    border-radius:8px;
+    padding:8px 18px;
+    font-family:'Anton',sans-serif;
+    font-size:clamp(18px,3.4vw,28px);
+    letter-spacing:1px;
+    box-shadow:0 0 26px var(--teal-glow);
+  }
+
+  /* ---- NAV TABS ---- */
+  .nav-tabs{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .nav-tab{
+    font-family:'Anton',sans-serif;
+    font-size:13px;
+    letter-spacing:1px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-soft);
+    border-radius:8px;
+    padding:9px 18px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .nav-tab:hover{border-color:var(--teal-dim);color:var(--text);}
+  .nav-tab.active{
+    background:var(--teal-glow);
+    border-color:var(--teal);
+    color:var(--teal);
+    box-shadow:0 0 16px var(--teal-glow);
+  }
+  .nav-tab.chamber-tab.active{
+    background:var(--orange-glow);
+    border-color:var(--orange);
+    color:var(--orange);
+    box-shadow:0 0 16px var(--orange-glow);
+  }
+
+  /* ---- MANIFEST PANEL ---- */
+  .manifest{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 14px 14px;
+    padding:0;
+  }
+  .meta-bar{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:14px 20px;
+    border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--text-soft);
+    letter-spacing:0.5px;
+  }
+  .meta-bar span b{color:var(--teal);}
+
+  /* ---- ADD ITEM BAR ---- */
+  .add-item-bar{padding:14px 20px;border-bottom:1px solid var(--border);}
+  .add-item-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--orange);
+    background:var(--orange-glow);
+    border:1px solid var(--orange);
+    border-radius:8px;
+    padding:9px 16px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .add-item-btn:hover{background:rgba(242,113,28,0.24);}
+  .add-item-panel{
+    display:none;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:12px;
+    padding:14px;
+    background:var(--panel);
+    border:1px dashed var(--orange);
+    border-radius:10px;
+    align-items:center;
+  }
+  .add-item-panel input{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:6px;
+    color:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    padding:9px 11px;
+    min-width:0;
+  }
+  .add-item-panel input::placeholder{color:var(--text-soft);}
+  .add-item-panel input:focus{outline:none;border-color:var(--orange);}
+  .field-name{flex:2;min-width:150px;}
+  .field-amount{flex:1;min-width:110px;}
+  .field-qty{flex:0.6;min-width:70px;}
+  .field-cat{flex:1;min-width:130px;}
+  .add-item-submit{
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:#1a0d05;
+    background:var(--orange);
+    border:none;
+    border-radius:6px;
+    padding:10px 18px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .add-item-submit:hover{filter:brightness(1.1);}
+  .add-item-hint{
+    width:100%;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--text-soft);
+    letter-spacing:0.3px;
+  }
+
+  /* ---- FILTER BAR ---- */
+  .filter-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    padding:14px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .pill-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    flex:1;
+  }
+  .pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--text-soft);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:6px 13px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .12s ease;
+  }
+  .pill:hover{border-color:var(--teal-dim);color:var(--text);}
+  .pill.active{
+    background:var(--teal-glow);
+    border-color:var(--teal);
+    color:var(--teal);
+  }
+  .search-wrap{
+    position:relative;
+    min-width:180px;
+  }
+  .search-wrap input{
+    width:100%;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    padding:8px 12px 8px 30px;
+  }
+  .search-wrap input::placeholder{color:var(--text-soft);}
+  .search-wrap input:focus{outline:none;border-color:var(--teal-dim);}
+  .search-wrap .icon{
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--text-soft);
+    font-size:13px;
+    pointer-events:none;
+  }
+  .no-results{
+    text-align:center;
+    padding:26px 10px;
+    color:var(--text-soft);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.5px;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-size:12.5px;
+    text-align:left;
+    padding:12px 10px;
+    background:var(--panel);
+    color:var(--text-soft);
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+  }
+  thead th.num, thead th.chk{text-align:center;}
+  tbody td{
+    padding:9px 10px;
+    border-bottom:1px solid var(--border);
+    font-size:14.5px;
+    vertical-align:middle;
+  }
+  tbody tr:nth-child(even){background:rgba(255,255,255,0.02);}
+  tbody tr.packed{background:var(--teal-glow) !important;}
+  tbody tr.packed .item-name{color:var(--text-soft);text-decoration:line-through;text-decoration-color:var(--teal);text-decoration-thickness:2px;}
+
+  td.sno{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--text-soft);
+    width:42px;
+  }
+  td.amt, td.qty{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:500;
+    text-align:right;
+    white-space:nowrap;
+    color:var(--text);
+  }
+  td.qty{text-align:center;color:var(--text-soft);}
+  .item-name{font-weight:500;color:var(--text);}
+  .item-cat{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.5px;
+    color:var(--text-soft);
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .custom-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:8.5px;
+    color:var(--orange);
+    border:1px solid var(--orange);
+    border-radius:4px;
+    padding:1px 4px;
+    margin-left:6px;
+    letter-spacing:0.5px;
+    vertical-align:middle;
+  }
+
+  /* ---- SPENT MONEY (writable) ---- */
+  td.spent{width:118px;}
+  .spent-field{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .spent-field .rupee{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    color:var(--text-soft);
+    position:absolute;
+    left:8px;
+    pointer-events:none;
+    font-size:13px;
+  }
+  .spent-input{
+    width:100%;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--teal);
+    padding:5px 6px 5px 22px;
+    text-align:right;
+    -moz-appearance:textfield;
+  }
+  .spent-input::-webkit-outer-spin-button,
+  .spent-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .spent-input::placeholder{color:var(--text-soft);opacity:.5;font-weight:400;}
+  .spent-input:focus{
+    outline:none;
+    border-bottom:1px solid var(--teal);
+    background-color:var(--teal-glow);
+  }
+  .saved-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.3px;
+    margin-top:3px;
+    padding-left:22px;
+    min-height:11px;
+  }
+  .saved-tag.saved-good{color:var(--teal);}
+  .saved-tag.saved-bad{color:var(--danger);}
+  .saved-tag.saved-even{color:var(--text-soft);}
+
+  tr.overspent .spent-input{color:var(--danger);}
+  tr.overspent .spent-field::after{
+    content:"OVER";
+    position:absolute;
+    right:6px;
+    top:-9px;
+    font-family:'Anton',sans-serif;
+    font-size:8.5px;
+    color:#20090b;
+    background:var(--danger);
+    border-radius:3px;
+    padding:1px 4px;
+    letter-spacing:1px;
+  }
+
+  /* ---- CHECKBOX / STAMP ---- */
+  td.chk{text-align:center;width:70px;}
+  .stampbox{
+    width:32px;height:32px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:var(--panel);
+    margin:0 auto;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    transition:transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+    user-select:none;
+  }
+  .stampbox:hover{transform:scale(1.06);border-color:var(--teal-dim);}
+  .stampbox:active{transform:scale(0.94);}
+  .stampbox.checked{
+    border-color:var(--teal);
+    box-shadow:0 0 12px var(--teal-glow);
+  }
+  .stampbox .mark{
+    font-family:'Anton',sans-serif;
+    font-size:11px;
+    color:var(--teal);
+    letter-spacing:0.5px;
+    opacity:0;
+    transition:opacity .1s ease, transform .18s ease;
+    transform:scale(0.7);
+  }
+  .stampbox.checked .mark{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  /* ---- DELETE (custom items only) ---- */
+  td.del{width:34px;text-align:center;}
+  .del-btn{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-soft);
+    border-radius:6px;
+    width:24px;height:24px;
+    cursor:pointer;
+    font-size:12px;
+    line-height:1;
+    transition:all .12s ease;
+  }
+  .del-btn:hover{border-color:var(--danger);color:var(--danger);}
+
+  /* ---- FOOTER TOTALS ---- */
+  .totals{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    border-top:1px solid var(--border);
+  }
+  .totals .cell{
+    flex:1;
+    min-width:150px;
+    padding:14px 18px;
+    border-right:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .totals .cell:last-child{border-right:none;}
+  .totals .label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--text-soft);
+    margin-bottom:4px;
+  }
+  .totals .value{
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    color:var(--text);
+  }
+  .totals .value.green{color:var(--teal);}
+  .totals .value.red{color:var(--danger);}
+
+  .progress-outer{
+    height:8px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    margin-top:6px;
+    width:100%;
+    overflow:hidden;
+  }
+  .progress-inner{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal-dim), var(--teal));
+    width:0%;
+    transition:width .25s ease;
+  }
+
+  .foot-note{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-soft);
+    letter-spacing:1px;
+    margin-top:16px;
+    opacity:.85;
+  }
+
+  /* ---- ACTUAL SPEND STAMP BANNER ---- */
+  .spend-banner{
+    margin-top:18px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:linear-gradient(135deg, var(--panel) 0%, #0f1319 100%);
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    position:relative;
+    overflow:hidden;
+  }
+  .spend-banner::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 90% 20%, rgba(45,217,196,0.10), transparent 55%);
+  }
+  .spend-banner .sb-label{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--text-soft);
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    z-index:1;
+  }
+  .spend-banner .sb-value{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(30px,6vw,46px);
+    color:var(--text);
+    letter-spacing:1px;
+    z-index:1;
+  }
+  .spend-banner .sb-stamp{
+    font-family:'Anton',sans-serif;
+    font-size:14px;
+    color:var(--text-soft);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:7px 14px;
+    letter-spacing:1.5px;
+    z-index:1;
+    white-space:nowrap;
+  }
+  .spend-banner .sb-stamp.good{border-color:var(--teal-dim);color:var(--teal);background:var(--teal-glow);}
+  .spend-banner .sb-stamp.bad{border-color:var(--danger-dark);color:var(--danger);background:rgba(241,101,101,0.10);}
+
+  /* ---- CHAMBER PAGE ---- */
+  .chamber-head{
+    border:1px solid var(--border);
+    border-radius:14px 14px 0 0;
+    background:linear-gradient(150deg, var(--panel) 0%, #0f1319 100%);
+    padding:22px 24px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .chamber-head::before{
+    content:"";
+    position:absolute;
+    right:-46px;top:-46px;
+    width:170px;height:170px;
+    border:2px solid var(--orange);
+    border-radius:50%;
+    opacity:0.10;
+  }
+  .chamber-head::after{
+    content:"";
+    position:absolute;
+    right:-8px;top:-8px;
+    width:100px;height:100px;
+    border:2px solid var(--teal);
+    border-radius:50%;
+    opacity:0.14;
+  }
+  .chamber-brand{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(32px,7vw,56px);
+    color:var(--text);
+    letter-spacing:2px;
+    line-height:0.95;
+    position:relative;
+    z-index:1;
+  }
+  .chamber-sub{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--orange);
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    margin-top:8px;
+    border:1px solid var(--orange);
+    background:var(--orange-glow);
+    display:inline-block;
+    border-radius:6px;
+    padding:4px 10px;
+    position:relative;
+    z-index:1;
+  }
+  .chamber-body{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 14px 14px;
+    padding:20px;
+  }
+  .chamber-summary{
+    display:flex;flex-wrap:wrap;
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .chamber-summary .cell{flex:1;min-width:140px;padding:14px 16px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;background:var(--panel);}
+  .chamber-summary .cell:last-child{border-right:none;}
+  .chamber-summary .label{font-size:10.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-soft);margin-bottom:4px;}
+  .chamber-summary .value{font-family:'Anton',sans-serif;font-size:20px;color:var(--text);}
+  .chamber-summary .value.green{color:var(--teal);}
+  .chamber-summary .value.red{color:var(--danger);}
+
+  .chamber-filter{margin-bottom:16px;display:flex;flex-wrap:wrap;gap:6px;}
+
+  .chamber-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:12px;
+  }
+  .vault-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px;
+    position:relative;
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .vault-card:hover{transform:translateY(-2px);border-color:var(--orange);}
+  .vault-card.vault-packed{border-color:var(--teal-dim);box-shadow:0 0 14px var(--teal-glow);}
+  .vault-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:6px;}
+  .vault-cat{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--text-soft);
+  }
+  .vault-badge{
+    font-family:'Anton',sans-serif;
+    font-size:8.5px;
+    color:#06231f;
+    background:var(--teal);
+    border-radius:4px;
+    padding:2px 5px;
+    letter-spacing:0.5px;
+    white-space:nowrap;
+  }
+  .vault-name{font-weight:600;font-size:14.5px;color:var(--text);margin-bottom:4px;}
+  .vault-qty{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-soft);margin-bottom:8px;}
+  .vault-spent{font-family:'Anton',sans-serif;font-size:19px;color:var(--orange);}
+  .vault-budget{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-soft);margin-top:2px;}
+  .vault-saved{font-family:'JetBrains Mono',monospace;font-size:10.5px;margin-top:4px;letter-spacing:0.3px;}
+  .vault-saved.saved-good{color:var(--teal);}
+  .vault-saved.saved-bad{color:var(--danger);}
+
+  .save-banner{margin-top:14px;}
+
+  .chamber-empty{
+    grid-column:1/-1;
+    text-align:center;
+    padding:50px 20px;
+    font-family:'JetBrains Mono',monospace;
+    color:var(--text-soft);
+    font-size:14px;
+    line-height:1.8;
+  }
+  .chamber-empty span{display:block;font-size:12px;opacity:.75;max-width:380px;margin:8px auto 0;}
+
+  /* ---- USER BAR ---- */
+  .user-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--text-soft);
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .user-bar b{color:var(--teal);}
+  .logout-btn{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-soft);
+    border-radius:6px;
+    padding:6px 14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.5px;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  .logout-btn:hover{border-color:var(--danger);color:var(--danger);}
+
+  /* ---- LOGIN / REGISTER ---- */
+  .login-card{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 14px 14px;
+    padding:26px 24px 30px;
+    max-width:420px;
+    margin:0 auto;
+  }
+  .login-tabs{display:flex;gap:8px;margin-bottom:20px;}
+  .login-tab{
+    flex:1;
+    font-family:'Anton',sans-serif;
+    font-size:13px;
+    letter-spacing:1px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-soft);
+    border-radius:8px;
+    padding:10px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .login-tab:hover{border-color:var(--teal-dim);color:var(--text);}
+  .login-tab.active{
+    background:var(--teal-glow);
+    border-color:var(--teal);
+    color:var(--teal);
+  }
+  .login-form{display:flex;flex-direction:column;gap:12px;}
+  .login-form input{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    padding:12px 14px;
+    width:100%;
+  }
+  .login-form input::placeholder{color:var(--text-soft);}
+  .login-form input:focus{outline:none;border-color:var(--teal-dim);}
+  .login-submit{
+    font-family:'Anton',sans-serif;
+    font-size:14px;
+    letter-spacing:1px;
+    color:#06231f;
+    background:var(--teal);
+    border:none;
+    border-radius:8px;
+    padding:13px;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .login-submit:hover{filter:brightness(1.08);}
+  .login-error{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--danger);
+    margin-top:14px;
+    min-height:14px;
+    text-align:center;
+  }
+  .login-hint{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--text-soft);
+    text-align:center;
+    margin-top:14px;
+    line-height:1.7;
+  }
+
+  @media (max-width:600px){
+    tbody td, thead th{padding:8px 6px;font-size:12.5px;}
+    .brand{font-size:44px;}
+    td.chk{width:50px;}
+    .stampbox{width:28px;height:28px;}
+    .stampbox .mark{font-size:8.5px;}
+    .filter-bar{flex-direction:column;align-items:stretch;}
+    .search-wrap{min-width:0;}
+    .add-item-panel{flex-direction:column;align-items:stretch;}
+    .add-item-panel input, .add-item-submit{width:100%;}
+    .chamber-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="page-login">
+    <div class="crate-top">
+      <div class="brand-row">
+        <div class="brand">BINSMEN</div>
+        <div class="brand-sub">Packing Manifest No. 001</div>
+      </div>
+      <div class="heading-strip">SIGN IN TO YOUR MANIFEST ----&gt;</div>
+    </div>
+    <div class="login-card">
+      <div class="login-tabs">
+        <button class="login-tab active" id="loginTabBtn" onclick="showLoginTab('login')">LOG IN</button>
+        <button class="login-tab" id="registerTabBtn" onclick="showLoginTab('register')">REGISTER</button>
+      </div>
+
+      <div id="loginForm" class="login-form">
+        <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+        <button class="login-submit" onclick="handleLogin()">ENTER THE MANIFEST</button>
+      </div>
+
+      <div id="registerForm" class="login-form" style="display:none;">
+        <input type="text" id="registerUsername" placeholder="Choose a username" autocomplete="username">
+        <input type="password" id="registerPassword" placeholder="Choose a password" autocomplete="new-password">
+        <input type="password" id="registerConfirm" placeholder="Confirm password" autocomplete="new-password">
+        <button class="login-submit" onclick="handleRegister()">CREATE MY MANIFEST</button>
+      </div>
+
+      <div class="login-error" id="loginError"></div>
+      <div class="login-hint">New users start with a blank budget &amp; shopping plan of their own — add your first items with the "+ ADD NEW ITEM" button once you're in.</div>
+    </div>
+  </div>
+
+  <div id="app-shell" style="display:none;">
+
+  <div class="crate-top">
+    <div class="brand-row">
+      <div class="brand">BINSMEN</div>
+      <div class="brand-sub">Packing Manifest No. 001</div>
+    </div>
+    <div class="heading-strip">ITEM TO BUY ----&gt;</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tabManifest" onclick="switchPage('manifest')">📦 MANIFEST</button>
+      <button class="nav-tab chamber-tab" id="tabChamber" onclick="switchPage('chamber')">🔒 CHAMBER</button>
+    </div>
+    <div class="user-bar">
+      <span>Signed in as <b id="userTag"></b></span>
+      <button class="logout-btn" onclick="logout()">LOG OUT</button>
+    </div>
+  </div>
+
+  <div id="page-manifest">
+    <div class="manifest">
+      <div class="meta-bar">
+        <span>STATUS: <b id="statusText">LOADING...</b></span>
+        <span>ITEMS: <b id="itemCount">0</b></span>
+        <span>PACKED: <b id="packedCount">0</b></span>
+      </div>
+
+      <div class="add-item-bar">
+        <button class="add-item-btn" id="addItemToggleBtn" onclick="toggleAddForm()">+ ADD NEW ITEM</button>
+        <div class="add-item-panel" id="addItemPanel">
+          <input class="field-name" id="newItemName" type="text" placeholder="Item name">
+          <input class="field-amount" id="newItemAmount" type="text" inputmode="numeric" placeholder="Budget ₹ (optional)">
+          <input class="field-qty" id="newItemQty" type="text" inputmode="numeric" placeholder="Qty (1)">
+          <input class="field-cat" id="newItemCategory" type="text" list="categoryList" placeholder="Category">
+          <datalist id="categoryList"></datalist>
+          <button class="add-item-submit" onclick="submitNewItem()">ADD TO MANIFEST</button>
+          <div class="add-item-hint">Leave budget blank for a "HOME" item you already own. Press Enter in the name field to add fast.</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="pill-row" id="pillRow"></div>
+        <div class="search-wrap">
+          <span class="icon">&#128269;</span>
+          <input type="text" id="searchInput" placeholder="Search items...">
+        </div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th class="num">S.No</th>
+              <th>Item Name</th>
+              <th class="num">Spent Money</th>
+              <th class="num">Amount</th>
+              <th class="num">Qty</th>
+              <th class="chk"></th>
+              <th class="del"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="totals">
+        <div class="cell">
+          <div class="label">Total Cost</div>
+          <div class="value" id="totalCost">₹0</div>
+        </div>
+        <div class="cell">
+          <div class="label">Packed Cost</div>
+          <div class="value green" id="packedCost">₹0</div>
+        </div>
+        <div class="cell">
+          <div class="label">Remaining Cost</div>
+          <div class="value red" id="remainingCost">₹0</div>
+        </div>
+        <div class="cell" style="flex:1.4;min-width:200px;">
+          <div class="label">Progress</div>
+          <div class="value" id="progressText">0%</div>
+          <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spend-banner">
+      <div>
+        <div class="sb-label">Amount Spent Actually ----&gt;</div>
+        <div class="sb-value" id="actualSpent">₹0</div>
+      </div>
+      <div class="sb-stamp" id="spendStamp">NO ENTRIES YET</div>
+    </div>
+
+    <div class="spend-banner save-banner">
+      <div>
+        <div class="sb-label">Total Money Saved ----&gt;</div>
+        <div class="sb-value" id="totalSaved">₹0</div>
+      </div>
+      <div class="sb-stamp" id="saveStamp">NO ENTRIES YET</div>
+    </div>
+
+    <div class="foot-note">TAP A BOX TO STAMP AN ITEM "PACKED" — TYPE IN "SPENT MONEY" TO LOG WHAT YOU ACTUALLY PAID — CHECK THE CHAMBER TAB FOR EVERYTHING YOU'VE ALREADY BOUGHT — SAVED AUTOMATICALLY</div>
+  </div>
+
+  <div id="page-chamber" style="display:none;">
+    <div class="chamber-head">
+      <div class="chamber-brand">THE CHAMBER</div>
+      <div class="chamber-sub">Storage Vault — Items Already Bought</div>
+    </div>
+    <div class="chamber-body">
+      <div class="chamber-summary">
+        <div class="cell"><div class="label">Items Bought</div><div class="value" id="chamberCount">0</div></div>
+        <div class="cell"><div class="label">Money Spent</div><div class="value green" id="chamberSpent">₹0</div></div>
+        <div class="cell"><div class="label">Budgeted</div><div class="value" id="chamberBudget">₹0</div></div>
+        <div class="cell"><div class="label">Variance</div><div class="value" id="chamberDiff">₹0</div></div>
+      </div>
+      <div class="chamber-filter" id="chamberPillRow"></div>
+      <div class="chamber-grid" id="chamberGrid"></div>
+    </div>
+    <div class="foot-note">EVERY ITEM YOU'VE LOGGED SPENT MONEY AGAINST GETS LOCKED AWAY IN HERE, PACKED OR NOT</div>
+  </div>
+
+  </div>
+
+</div>
+
+<script>
+// [name, amount, qty, category]
+const BASE_ITEMS_RAW = [
+  ["Keyboard",1500,1,"Electronics"],
+  ["Mouse & pad",1700,1,"Electronics"],
+  ["Phone cover",700,1,"Electronics"],
+  ["Headphones",2500,1,"Electronics"],
+  ["Earphone buds",2000,1,"Electronics"],
+  ["Trimmer",2000,1,"Electronics"],
+  ["Digital alarm",600,1,"Electronics"],
+  ["Torch",300,1,"Electronics"],
+  ["Football shoes",1000,1,"Footwear"],
+  ["Casual shoes",3500,1,"Footwear"],
+  ["Running shoes",1500,1,"Footwear"],
+  ["Formal shoes",1500,1,"Footwear"],
+  ["Bathroom slipper",300,1,"Footwear"],
+  ["Crocs",4500,1,"Footwear"],
+  ["Suitcase",5000,1,"Bags"],
+  ["College bag (Laptop Carrier)",5000,1,"Bags"],
+  ["Medium bag",1000,1,"Bags"],
+  ["Pouch",200,1,"Bags"],
+  ["Bedsheet",500,1,"Bedding & Bath"],
+  ["Pillow",500,1,"Bedding & Bath"],
+  ["Blanket",1000,1,"Bedding & Bath"],
+  ["Laundry bag",500,1,"Bedding & Bath"],
+  ["Bath towel",500,1,"Bedding & Bath"],
+  ["Normal towel",200,1,"Bedding & Bath"],
+  ["Body wash",300,1,"Toiletries & Grooming"],
+  ["Shampoo & Conditioner",900,1,"Toiletries & Grooming"],
+  ["Detergent & Comforter",1000,1,"Toiletries & Grooming"],
+  ["Sunscreen & Moisturizer",800,1,"Toiletries & Grooming"],
+  ["Deo & perfume",500,1,"Toiletries & Grooming"],
+  ["Qtips & comb",300,1,"Toiletries & Grooming"],
+  ["Under arm roller",500,1,"Toiletries & Grooming"],
+  ["Lip balm & Vaseline",500,1,"Toiletries & Grooming"],
+  ["Brush & paste",400,1,"Toiletries & Grooming"],
+  ["Body & hair wash",250,1,"Toiletries & Grooming"],
+  ["Nail cutter",100,1,"Toiletries & Grooming"],
+  ["Coconut oil",null,1,"Toiletries & Grooming"],
+  ["Curl cream",500,1,"Toiletries & Grooming"],
+  ["Hangers & clips",400,1,"Appliances & Utility"],
+  ["Copper bottle",1000,1,"Appliances & Utility"],
+  ["Bucket & mug",200,1,"Appliances & Utility"],
+  ["Tiffin box",300,1,"Appliances & Utility"],
+  ["Mirror",400,1,"Appliances & Utility"],
+  ["Iron box",1500,1,"Appliances & Utility"],
+  ["Kettle",1000,1,"Appliances & Utility"],
+  ["Steamer",500,1,"Appliances & Utility"],
+  ["Umbrella",500,1,"Appliances & Utility"],
+  ["Jockey Underwear",1500,5,"Clothing"],
+  ["Vest",300,3,"Clothing"],
+  ["Socks",1100,9,"Clothing"],
+  ["Handkerchief",150,10,"Clothing"],
+  ["Formal shirt",4400,3,"Clothing"],
+  ["Formal pant",3300,2,"Clothing"],
+  ["Formal belt",700,1,"Clothing"],
+  ["Jeans pant",5200,4,"Clothing"],
+  ["Cotton cargos",3000,2,"Clothing"],
+  ["Chinos pant",1500,1,"Clothing"],
+  ["Track pant",2800,3,"Clothing"],
+  ["Shorts",1500,3,"Clothing"],
+  ["Shirt",3000,3,"Clothing"],
+  ["T-shirt",3600,6,"Clothing"],
+  ["Full hand T-shirt",2400,3,"Clothing"],
+  ["Hoodie",2800,2,"Clothing"],
+  ["Jacket",2000,2,"Clothing"],
+  ["Normal T-shirt",900,3,"Clothing"],
+  ["Books",500,1,"Stationery & Misc"],
+  ["Pen",200,1,"Stationery & Misc"],
+  ["Diary",200,1,"Stationery & Misc"]
+];
+
+const BASE_ITEMS = BASE_ITEMS_RAW.map((row, i)=>({
+  id:"i"+i, name:row[0], amount:row[1], qty:row[2], category:row[3], custom:false
+}));
+
+let ITEMS = [];
+let customItems = [];
+let packed = {};   // id -> bool
+let spent  = {};   // id -> number|null
+let CATEGORIES = ["All"];
+let activeCategory = "All";
+let searchQuery = "";
+let chamberCategory = "All";
+let addFormOpen = false;
+let currentUser = null;
+let useBase = false;
+
+const USERS_KEY = "binsmen-users";
+const SESSION_KEY = "binsmen-session";
+
+function formatRupee(n){
+  return "₹" + n.toLocaleString("en-IN");
+}
+
+/* ---- ACCOUNTS ---- */
+function getUsers(){
+  try{
+    const u = JSON.parse(localStorage.getItem(USERS_KEY));
+    return (u && typeof u === "object" && !Array.isArray(u)) ? u : {};
+  }catch(e){
+    return {};
+  }
+}
+
+function saveUsers(users){
+  try{ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }catch(e){}
+}
+
+function userDataKey(username){
+  return "binsmen-data::" + username;
+}
+
+function seedDefaultUser(){
+  const users = getUsers();
+  if(!users["Neel@321"]){
+    users["Neel@321"] = {password:"binsmen", useBase:true};
+    saveUsers(users);
+  }
+  const key = userDataKey("Neel@321");
+  if(!localStorage.getItem(key)){
+    try{
+      localStorage.setItem(key, JSON.stringify({customItems:[], packed:{}, spent:{}}));
+    }catch(e){}
+  }
+}
+
+function attemptLogin(username, password){
+  const users = getUsers();
+  const rec = users[username];
+  if(!rec || rec.password !== password) return false;
+  try{ localStorage.setItem(SESSION_KEY, username); }catch(e){}
+  return true;
+}
+
+function attemptRegister(username, password){
+  const users = getUsers();
+  if(users[username]) return {ok:false};
+  users[username] = {password, useBase:false};
+  saveUsers(users);
+  try{
+    localStorage.setItem(userDataKey(username), JSON.stringify({customItems:[], packed:{}, spent:{}}));
+    localStorage.setItem(SESSION_KEY, username);
+  }catch(e){}
+  return {ok:true};
+}
+
+function showLoginTab(tab){
+  const isLogin = tab === "login";
+  document.getElementById("loginTabBtn").classList.toggle("active", isLogin);
+  document.getElementById("registerTabBtn").classList.toggle("active", !isLogin);
+  document.getElementById("loginForm").style.display = isLogin ? "flex" : "none";
+  document.getElementById("registerForm").style.display = isLogin ? "none" : "flex";
+  document.getElementById("loginError").textContent = "";
+}
+
+function handleLogin(){
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const errorEl = document.getElementById("loginError");
+  if(!username || !password){
+    errorEl.textContent = "Enter both username and password.";
+    return;
+  }
+  if(attemptLogin(username, password)){
+    errorEl.textContent = "";
+    enterApp(username);
+  } else {
+    errorEl.textContent = "Incorrect username or password.";
+  }
+}
+
+function handleRegister(){
+  const username = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value;
+  const confirmPw = document.getElementById("registerConfirm").value;
+  const errorEl = document.getElementById("loginError");
+  if(!username || !password){
+    errorEl.textContent = "Choose a username and password.";
+    return;
+  }
+  if(password !== confirmPw){
+    errorEl.textContent = "Passwords don't match.";
+    return;
+  }
+  const result = attemptRegister(username, password);
+  if(!result.ok){
+    errorEl.textContent = "That username is already taken.";
+    return;
+  }
+  errorEl.textContent = "";
+  enterApp(username);
+}
+
+function logout(){
+  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+  currentUser = null;
+  document.getElementById("app-shell").style.display = "none";
+  document.getElementById("page-login").style.display = "";
+  document.getElementById("loginUsername").value = "";
+  document.getElementById("loginPassword").value = "";
+  showLoginTab("login");
+}
+
+function enterApp(username){
+  currentUser = username;
+  const users = getUsers();
+  useBase = users[username] ? !!users[username].useBase : false;
+  document.getElementById("page-login").style.display = "none";
+  document.getElementById("app-shell").style.display = "";
+  document.getElementById("userTag").textContent = username;
+  loadUserData();
+  switchPage("manifest");
+}
+
+function initApp(){
+  seedDefaultUser();
+  let session = null;
+  try{ session = localStorage.getItem(SESSION_KEY); }catch(e){}
+  if(session){
+    const users = getUsers();
+    if(users[session]){
+      enterApp(session);
+      return;
+    }
+  }
+  document.getElementById("page-login").style.display = "";
+  document.getElementById("app-shell").style.display = "none";
+}
+
+/* ---- PER-USER DATA ---- */
+function loadUserData(){
+  let data = {};
+  try{
+    data = JSON.parse(localStorage.getItem(userDataKey(currentUser))) || {};
+  }catch(e){
+    data = {};
+  }
+  customItems = Array.isArray(data.customItems) ? data.customItems : [];
+  packed = (data.packed && typeof data.packed === "object" && !Array.isArray(data.packed)) ? data.packed : {};
+  spent  = (data.spent  && typeof data.spent  === "object" && !Array.isArray(data.spent))  ? data.spent  : {};
+
+  ITEMS = (useBase ? BASE_ITEMS.slice() : []).concat(customItems);
+
+  ITEMS.forEach(item=>{
+    if(!(item.id in packed)) packed[item.id] = false;
+    if(!(item.id in spent))  spent[item.id]  = null;
+  });
+
+  document.getElementById("statusText").textContent = "SAVED TO " + currentUser.toUpperCase();
+
+  refreshCategories();
+  renderFilters();
+  render();
+}
+
+function saveUserData(){
+  if(!currentUser) return;
+  try{
+    localStorage.setItem(userDataKey(currentUser), JSON.stringify({customItems, packed, spent}));
+  }catch(e){
+    // storage unavailable — state still persists in memory for this session
+  }
+}
+
+function refreshCategories(){
+  CATEGORIES = ["All", ...Array.from(new Set(ITEMS.map(i=>i.category)))];
+  if(!CATEGORIES.includes(activeCategory)) activeCategory = "All";
+  const dl = document.getElementById("categoryList");
+  if(dl){
+    dl.innerHTML = CATEGORIES.filter(c=>c!=="All").map(c=>`<option value="${c}"></option>`).join("");
+  }
+}
+
+function toggleItem(id){
+  packed[id] = !packed[id];
+  saveUserData();
+  render();
+}
+
+function switchPage(page){
+  document.getElementById("page-manifest").style.display = page === "manifest" ? "" : "none";
+  document.getElementById("page-chamber").style.display   = page === "chamber"  ? "" : "none";
+  document.getElementById("tabManifest").classList.toggle("active", page === "manifest");
+  document.getElementById("tabChamber").classList.toggle("active", page === "chamber");
+  if(page === "chamber"){
+    renderChamberFilters();
+    renderChamber();
+  }
+}
+
+/* ---- ADD ITEM ---- */
+function toggleAddForm(){
+  addFormOpen = !addFormOpen;
+  const panel = document.getElementById("addItemPanel");
+  panel.style.display = addFormOpen ? "flex" : "none";
+  document.getElementById("addItemToggleBtn").textContent = addFormOpen ? "✕ CANCEL" : "+ ADD NEW ITEM";
+  if(addFormOpen) document.getElementById("newItemName").focus();
+}
+
+function submitNewItem(){
+  const nameEl = document.getElementById("newItemName");
+  const name = nameEl.value.trim();
+  if(!name){
+    nameEl.focus();
+    return;
+  }
+  const amtRaw = document.getElementById("newItemAmount").value.trim().replace(/[^0-9]/g,"");
+  const amount = amtRaw === "" ? null : parseInt(amtRaw,10);
+
+  const qtyRaw = document.getElementById("newItemQty").value.trim().replace(/[^0-9]/g,"");
+  const qty = qtyRaw === "" ? 1 : Math.max(1, parseInt(qtyRaw,10) || 1);
+
+  const category = document.getElementById("newItemCategory").value.trim() || "Custom";
+
+  const id = "c" + Date.now() + Math.floor(Math.random()*1000);
+  const item = {id, name, amount, qty, category, custom:true};
+
+  ITEMS.push(item);
+  customItems.push(item);
+  packed[id] = false;
+  spent[id] = null;
+
+  saveUserData();
+  refreshCategories();
+  renderFilters();
+  render();
+
+  document.getElementById("newItemName").value = "";
+  document.getElementById("newItemAmount").value = "";
+  document.getElementById("newItemQty").value = "";
+  document.getElementById("newItemCategory").value = "";
+  nameEl.focus();
+}
+
+function deleteItem(id){
+  if(!confirm("Remove this item from the manifest?")) return;
+  ITEMS = ITEMS.filter(i=>i.id!==id);
+  customItems = customItems.filter(i=>i.id!==id);
+  delete packed[id];
+  delete spent[id];
+  saveUserData();
+  refreshCategories();
+  renderFilters();
+  render();
+}
+
+function renderFilters(){
+  const pillRow = document.getElementById("pillRow");
+  pillRow.innerHTML = "";
+  CATEGORIES.forEach(cat=>{
+    const btn = document.createElement("button");
+    btn.className = "pill" + (cat === activeCategory ? " active" : "");
+    btn.textContent = cat;
+    btn.addEventListener("click", ()=>{
+      activeCategory = cat;
+      renderFilters();
+      render();
+    });
+    pillRow.appendChild(btn);
+  });
+
+  const searchInput = document.getElementById("searchInput");
+  searchInput.value = searchQuery;
+  searchInput.oninput = (e)=>{
+    searchQuery = e.target.value;
+    render();
+  };
+
+  const nameEl = document.getElementById("newItemName");
+  nameEl.onkeydown = (e)=>{
+    if(e.key === "Enter") submitNewItem();
+  };
+}
+
+function getFilteredItems(){
+  const q = searchQuery.trim().toLowerCase();
+  return ITEMS.filter(item=>{
+    const matchesCategory = (activeCategory === "All" || item.category === activeCategory);
+    const matchesSearch = (q === "" || item.name.toLowerCase().includes(q));
+    return matchesCategory && matchesSearch;
+  });
+}
+
+function render(){
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  const visible = getFilteredItems();
+
+  if(visible.length === 0){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="7" class="no-results">NO ITEMS MATCH THIS SEARCH / FILTER</td>`;
+    tbody.appendChild(tr);
+  }
+
+  visible.forEach((item, i)=>{
+    const isPacked = packed[item.id];
+    const lineBudget = item.amount === null ? 0 : item.amount;
+    const spentVal = spent[item.id];
+    const isOver = (spentVal !== null && spentVal > lineBudget && lineBudget > 0);
+
+    const tr = document.createElement("tr");
+    tr.className = (isPacked ? "packed " : "") + (isOver ? "overspent" : "");
+    tr.dataset.id = item.id;
+
+    const amtDisplay = item.amount === null ? "HOME" : formatRupee(item.amount);
+
+    let savedLabel = "", savedClass = "";
+    if(spentVal !== null){
+      const savedAmt = lineBudget - spentVal;
+      if(savedAmt > 0){ savedLabel = "SAVED " + formatRupee(savedAmt); savedClass = "saved-good"; }
+      else if(savedAmt < 0){ savedLabel = "OVER " + formatRupee(Math.abs(savedAmt)); savedClass = "saved-bad"; }
+      else { savedLabel = "EXACT"; savedClass = "saved-even"; }
+    }
+
+    tr.innerHTML = `
+      <td class="sno">${String(i+1).padStart(2,"0")}</td>
+      <td class="item-name">${item.name}${item.custom ? '<span class="custom-tag">NEW</span>' : ''}<span class="item-cat">${item.category}</span></td>
+      <td class="spent">
+        <div class="spent-field">
+          <span class="rupee">₹</span>
+          <input class="spent-input" type="text" inputmode="numeric" placeholder="0"
+                 value="${spentVal === null ? "" : spentVal}" data-id="${item.id}">
+        </div>
+        <div class="saved-tag ${savedClass}" id="saved-${item.id}">${savedLabel}</div>
+      </td>
+      <td class="amt">${amtDisplay}</td>
+      <td class="qty">${item.qty}</td>
+      <td class="chk"><div class="stampbox ${isPacked?"checked":""}" data-id="${item.id}"><span class="mark">OK</span></div></td>
+      <td class="del">${item.custom ? `<button class="del-btn" data-id="${item.id}" title="Remove item">✕</button>` : ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll(".stampbox").forEach(box=>{
+    box.addEventListener("click", ()=>{
+      toggleItem(box.getAttribute("data-id"));
+    });
+  });
+
+  tbody.querySelectorAll(".spent-input").forEach(input=>{
+    input.addEventListener("input", (e)=>{
+      const id = input.getAttribute("data-id");
+      const clean = e.target.value.replace(/[^0-9]/g, "");
+      if(e.target.value !== clean) e.target.value = clean;
+      spent[id] = clean === "" ? null : parseInt(clean,10);
+
+      const item = ITEMS.find(it=>it.id===id);
+      const lineBudget = item.amount === null ? 0 : item.amount;
+      const row = input.closest("tr");
+      const isOver = (spent[id] !== null && spent[id] > lineBudget && lineBudget > 0);
+      row.classList.toggle("overspent", isOver);
+
+      const savedEl = document.getElementById("saved-"+id);
+      if(savedEl){
+        if(spent[id] !== null){
+          const savedAmt = lineBudget - spent[id];
+          if(savedAmt > 0){ savedEl.textContent = "SAVED " + formatRupee(savedAmt); savedEl.className = "saved-tag saved-good"; }
+          else if(savedAmt < 0){ savedEl.textContent = "OVER " + formatRupee(Math.abs(savedAmt)); savedEl.className = "saved-tag saved-bad"; }
+          else { savedEl.textContent = "EXACT"; savedEl.className = "saved-tag saved-even"; }
+        } else {
+          savedEl.textContent = "";
+          savedEl.className = "saved-tag";
+        }
+      }
+
+      updateTotals();
+    });
+    input.addEventListener("blur", ()=>{ saveUserData(); });
+  });
+
+  tbody.querySelectorAll(".del-btn").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      deleteItem(btn.getAttribute("data-id"));
+    });
+  });
+
+  updateTotals();
+}
+
+function updateTotals(){
+  let totalCost = 0, packedCost = 0, packedCount = 0, actualSpent = 0, anyEntry = false, totalSaved = 0;
+
+  ITEMS.forEach(item=>{
+    const lineAmount = item.amount === null ? 0 : item.amount;
+    totalCost += lineAmount;
+    if(packed[item.id]){ packedCost += lineAmount; packedCount++; }
+    if(spent[item.id] !== null){
+      actualSpent += spent[item.id];
+      anyEntry = true;
+      totalSaved += (lineAmount - spent[item.id]);
+    }
+  });
+
+  document.getElementById("itemCount").textContent = ITEMS.length;
+  document.getElementById("packedCount").textContent = packedCount;
+  document.getElementById("totalCost").textContent = formatRupee(totalCost);
+  document.getElementById("packedCost").textContent = formatRupee(packedCost);
+  document.getElementById("remainingCost").textContent = formatRupee(totalCost - packedCost);
+
+  const pct = ITEMS.length ? Math.round((packedCount/ITEMS.length)*100) : 0;
+  document.getElementById("progressText").textContent = pct + "%";
+  document.getElementById("progressBar").style.width = pct + "%";
+
+  document.getElementById("actualSpent").textContent = formatRupee(actualSpent);
+  const stamp = document.getElementById("spendStamp");
+  if(!anyEntry){
+    stamp.textContent = "NO ENTRIES YET";
+    stamp.className = "sb-stamp";
+  } else if(actualSpent <= totalCost){
+    stamp.textContent = "WITHIN BUDGET";
+    stamp.className = "sb-stamp good";
+  } else {
+    stamp.textContent = "OVER BUDGET";
+    stamp.className = "sb-stamp bad";
+  }
+
+  document.getElementById("totalSaved").textContent = totalSaved >= 0
+    ? formatRupee(totalSaved)
+    : "−" + formatRupee(Math.abs(totalSaved));
+  const saveStamp = document.getElementById("saveStamp");
+  if(!anyEntry){
+    saveStamp.textContent = "NO ENTRIES YET";
+    saveStamp.className = "sb-stamp";
+  } else if(totalSaved > 0){
+    saveStamp.textContent = "MONEY SAVED";
+    saveStamp.className = "sb-stamp good";
+  } else if(totalSaved < 0){
+    saveStamp.textContent = "OVERSPENT OVERALL";
+    saveStamp.className = "sb-stamp bad";
+  } else {
+    saveStamp.textContent = "SPOT ON";
+    saveStamp.className = "sb-stamp";
+  }
+}
+
+/* ---- CHAMBER (already bought / stored) ---- */
+function getBoughtItems(){
+  return ITEMS.filter(item => spent[item.id] !== null);
+}
+
+function renderChamberFilters(){
+  const bought = getBoughtItems();
+  const cats = ["All", ...Array.from(new Set(bought.map(i=>i.category)))];
+  if(!cats.includes(chamberCategory)) chamberCategory = "All";
+  const row = document.getElementById("chamberPillRow");
+  row.innerHTML = "";
+  cats.forEach(cat=>{
+    const btn = document.createElement("button");
+    btn.className = "pill" + (cat === chamberCategory ? " active" : "");
+    btn.textContent = cat;
+    btn.addEventListener("click", ()=>{
+      chamberCategory = cat;
+      renderChamberFilters();
+      renderChamber();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function renderChamber(){
+  const bought = getBoughtItems().filter(i => chamberCategory === "All" || i.category === chamberCategory);
+  const grid = document.getElementById("chamberGrid");
+  grid.innerHTML = "";
+
+  let totalSpent = 0, totalBudget = 0;
+  bought.forEach(i=>{ totalSpent += spent[i.id]; totalBudget += (i.amount || 0); });
+
+  document.getElementById("chamberCount").textContent = bought.length;
+  document.getElementById("chamberSpent").textContent = formatRupee(totalSpent);
+  document.getElementById("chamberBudget").textContent = formatRupee(totalBudget);
+
+  const diff = totalSpent - totalBudget;
+  const diffEl = document.getElementById("chamberDiff");
+  diffEl.textContent = (diff >= 0 ? "+" : "−") + formatRupee(Math.abs(diff));
+  diffEl.className = "value " + (diff > 0 ? "red" : "green");
+
+  if(bought.length === 0){
+    grid.innerHTML = `<div class="chamber-empty">🔒 CHAMBER EMPTY<br><span>Nothing's locked away yet — log some "Spent Money" on the Manifest page and it'll show up here.</span></div>`;
+    return;
+  }
+
+  bought.forEach(item=>{
+    const card = document.createElement("div");
+    card.className = "vault-card" + (packed[item.id] ? " vault-packed" : "");
+    const budget = item.amount === null ? "HOME ITEM" : formatRupee(item.amount);
+    let savedHtml = "";
+    if(item.amount !== null){
+      const savedAmt = item.amount - spent[item.id];
+      savedHtml = savedAmt >= 0
+        ? `<div class="vault-saved saved-good">Saved ${formatRupee(savedAmt)}</div>`
+        : `<div class="vault-saved saved-bad">Over ${formatRupee(Math.abs(savedAmt))}</div>`;
+    }
+    card.innerHTML = `
+      <div class="vault-card-top">
+        <span class="vault-cat">${item.category}</span>
+        ${packed[item.id] ? '<span class="vault-badge">PACKED</span>' : ''}
+      </div>
+      <div class="vault-name">${item.name}</div>
+      <div class="vault-qty">Qty: ${item.qty}</div>
+      <div class="vault-spent">${formatRupee(spent[item.id])}</div>
+      <div class="vault-budget">of ${budget}</div>
+      ${savedHtml}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById("loginUsername").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleLogin(); });
+document.getElementById("loginPassword").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleLogin(); });
+document.getElementById("registerUsername").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
+document.getElementById("registerPassword").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
+document.getElementById("registerConfirm").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
+
+initApp();
+</script>
+</body>
+</html>
