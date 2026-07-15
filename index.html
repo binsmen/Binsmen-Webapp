@@ -1,4 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<title>BINSMEN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d12;
+    --panel:#12151c;
+    --panel-alt:#151920;
+    --border:#242933;
+    --text:#e7e9ee;
+    --text-soft:#8890a0;
+    --teal:#2dd9c4;
+    --teal-dim:#1a9e8f;
+    --teal-glow:rgba(45,217,196,0.16);
+    --orange:#f2711c;
+    --orange-glow:rgba(242,113,28,0.16);
+    --danger:#f16565;
+    --danger-dark:#c23f3f;
+    --ok:#2dd9a8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(45,217,196,0.10), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(242,113,28,0.08), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Oswald',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+
+  .wrap{max-width:960px;margin:0 auto;}
+
+  /* ---- HEADER PANEL ---- */
+  .crate-top{
+    border:1px solid var(--border);
+    border-radius:14px 14px 0 0;
+    background:linear-gradient(150deg, var(--panel) 0%, #0f1319 100%);
+    padding:22px 24px 20px;
+    position:relative;
+  }
+
+  .brand-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .brand{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(40px,8vw,72px);
+    letter-spacing:2px;
+    color:var(--text);
+    text-shadow:0 0 24px var(--teal-glow);
+    line-height:0.9;
+  }
+  .brand-sub{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:12px;
+    letter-spacing:3px;
     text-transform:uppercase;
     border:1px solid var(--teal-dim);
     background:var(--teal-glow);
@@ -724,6 +785,187 @@
     .add-item-panel input, .add-item-submit{width:100%;}
     .chamber-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
   }
+  /* ---- HELPER CHATBOT ---- */
+  .chat-notice{
+    position:fixed;
+    bottom:38px;
+    right:90px;
+    background:var(--panel);
+    border:1px solid var(--teal);
+    color:var(--teal);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.6px;
+    padding:9px 14px;
+    border-radius:20px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4), 0 0 14px var(--teal-glow);
+    z-index:998;
+    white-space:nowrap;
+    animation:noticePulse 2.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes noticePulse{
+    0%, 100%{box-shadow:0 4px 16px rgba(0,0,0,0.4), 0 0 10px var(--teal-glow);}
+    50%{box-shadow:0 4px 16px rgba(0,0,0,0.4), 0 0 22px var(--teal-glow);}
+  }
+  .chat-notice.hidden{display:none;}
+
+  .chat-fab{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    width:58px;height:58px;
+    border-radius:50%;
+    background:var(--teal);
+    color:#06231f;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4), 0 0 24px var(--teal-glow);
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .15s ease;
+  }
+  .chat-fab:hover{transform:scale(1.07);}
+  .chat-fab .close-icon{display:none;}
+  .chat-fab.open .chat-icon{display:none;}
+  .chat-fab.open .close-icon{display:block;}
+
+  .chat-window{
+    position:fixed;
+    bottom:92px;
+    right:22px;
+    width:min(340px, calc(100vw - 32px));
+    height:min(480px, calc(100vh - 140px));
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    z-index:998;
+  }
+  .chat-window.open{display:flex;}
+  .chat-header{
+    background:linear-gradient(135deg, var(--panel) 0%, #0f1319 100%);
+    border-bottom:1px solid var(--border);
+    padding:14px 16px;
+  }
+  .chat-header-title{
+    font-family:'Anton',sans-serif;
+    font-size:16px;
+    letter-spacing:1px;
+    color:var(--text);
+  }
+  .chat-header-sub{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--teal);
+    letter-spacing:1px;
+    margin-top:2px;
+  }
+  .chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .chat-bubble{
+    max-width:85%;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.5;
+    font-family:'Oswald',sans-serif;
+  }
+  .chat-bubble.bot{
+    align-self:flex-start;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-bottom-left-radius:2px;
+  }
+  .chat-bubble.user{
+    align-self:flex-end;
+    background:var(--teal-glow);
+    border:1px solid var(--teal-dim);
+    color:var(--text);
+    border-bottom-right-radius:2px;
+  }
+  .chat-quick-replies{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    padding:0 14px 10px;
+  }
+  .chat-quick-replies button{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--teal);
+    background:var(--teal-glow);
+    border:1px solid var(--teal-dim);
+    border-radius:14px;
+    padding:6px 11px;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  .chat-quick-replies button:hover{background:rgba(45,217,196,0.24);}
+  .chat-input-row{
+    display:flex;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid var(--border);
+    background:var(--panel);
+  }
+  .chat-input-row input{
+    flex:1;
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    padding:9px 12px;
+  }
+  .chat-input-row input::placeholder{color:var(--text-soft);}
+  .chat-input-row input:focus{outline:none;border-color:var(--teal-dim);}
+  .chat-input-row button{
+    background:var(--teal);
+    color:#06231f;
+    border:none;
+    border-radius:8px;
+    padding:0 16px;
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:0.5px;
+    cursor:pointer;
+  }
+  .chat-input-row button:hover{filter:brightness(1.08);}
+
+  @media (max-width:600px){
+    .chat-window{
+      right:14px;
+      bottom:82px;
+    }
+    .chat-fab{
+      right:14px;
+      bottom:14px;
+    }
+    .chat-notice{
+      right:78px;
+      bottom:28px;
+      font-size:10px;
+      padding:7px 11px;
+      white-space:normal;
+      max-width:150px;
+      text-align:center;
+    }
+  }
 </style>
 </head>
 <body>
@@ -885,6 +1127,25 @@
 
   </div>
 
+</div>
+
+<div class="chat-notice" id="chatNotice">ASK BINSMEN AI FOR ASSISTANCE</div>
+<button class="chat-fab" id="chatFab" onclick="toggleChat()">
+  <span class="chat-icon">💬</span>
+  <span class="close-icon">✕</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-header-title">BINSMEN.AI</div>
+    <div class="chat-header-sub">ASK BINSMEN AI FOR ASSISTANCE</div>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-quick-replies" id="chatQuickReplies"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Type your question...">
+    <button onclick="sendChatMessage()">SEND</button>
+  </div>
 </div>
 
 <script>
@@ -1502,6 +1763,156 @@ document.getElementById("loginPassword").addEventListener("keydown", (e)=>{ if(e
 document.getElementById("registerUsername").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
 document.getElementById("registerPassword").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
 document.getElementById("registerConfirm").addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleRegister(); });
+
+/* ---- FAQ HELPER CHATBOT ---- */
+const CHAT_KB = [
+  {
+    keywords:["add item","new item","add new","add a product","add product"],
+    answer:"Tap the orange \"+ ADD NEW ITEM\" button above the table. Fill in the name, an optional budget, quantity, and category, then hit ADD TO MANIFEST. Leave the budget blank if it's something you already own (a HOME item)."
+  },
+  {
+    keywords:["delete","remove item","delete item"],
+    answer:"Only items you've added yourself can be deleted — look for the ✕ button on the right of that row. Built-in items can't be removed, but you can just ignore them."
+  },
+  {
+    keywords:["pack","packed","stamp","checkbox","tick","check box"],
+    answer:"Click the box on the right of any row to mark it \"packed\". Packed rows get a teal highlight and a strikethrough, and count toward your Packed Cost total."
+  },
+  {
+    keywords:["spent","spend","spent money","how much did i pay","log money","enter money"],
+    answer:"Type the actual amount you paid into the \"Spent Money\" field for that item. It saves automatically, and shows SAVED or OVER right underneath depending on whether you beat your budget."
+  },
+  {
+    keywords:["saved","saving","save money","total saved"],
+    answer:"Once you log spent money for an item, we compare it to its budget. Under budget shows SAVED in teal, over budget shows OVER in red. All your savings across every item add up in the \"Total Money Saved\" banner near the bottom."
+  },
+  {
+    keywords:["chamber","vault","storage","bought","already bought"],
+    answer:"The Chamber tab (🔒) is your storage vault — it automatically shows every item you've logged spent money against, since that means you've already bought it. You can filter by category there too."
+  },
+  {
+    keywords:["search","filter","category","find item"],
+    answer:"Use the category pills to filter by type, or the search box next to them to find an item by name — both work together."
+  },
+  {
+    keywords:["login","log in","sign in","password","username","account"],
+    answer:"You need an account to use the app. If you already have one, use the LOG IN tab. New here? Use REGISTER to create your own username and password — you'll start with a totally blank manifest to build up yourself."
+  },
+  {
+    keywords:["register","sign up","new account","create account"],
+    answer:"Click REGISTER on the login screen, pick a username and password, confirm the password, and you're in. Your manifest starts empty — add your own items with the \"+ ADD NEW ITEM\" button."
+  },
+  {
+    keywords:["data","storage","privacy","secure","safe","synced","sync","device","browser"],
+    answer:"Your data is saved locally in this browser only (not a shared online database). That means it won't show up if you open the app on a different device or browser — each one keeps its own separate copy."
+  },
+  {
+    keywords:["logout","log out","sign out"],
+    answer:"Click LOG OUT in the top-right of the header. Your data stays saved under your account — log back in any time to pick up right where you left off."
+  },
+  {
+    keywords:["forgot password","lost password","reset password"],
+    answer:"There's no password reset built in yet — it's saved only in this browser. If you've forgotten your password, you'll need to register a new username."
+  },
+  {
+    keywords:["hi","hello","hey","yo"],
+    answer:"Hey! I'm BINSMEN.AI. Ask me anything about adding items, packing, spending, the Chamber, or your account."
+  },
+  {
+    keywords:["thank","thanks","thank you"],
+    answer:"You're welcome! Anything else you'd like help with?"
+  }
+];
+
+const CHAT_QUICK_REPLIES = [
+  "How do I add an item?",
+  "How do I mark something as packed?",
+  "What is the Chamber?",
+  "Where is my data stored?"
+];
+
+let chatOpen = false;
+let chatGreeted = false;
+
+function toggleChat(){
+  chatOpen = !chatOpen;
+  document.getElementById("chatWindow").classList.toggle("open", chatOpen);
+  document.getElementById("chatFab").classList.toggle("open", chatOpen);
+  document.getElementById("chatNotice").classList.add("hidden");
+  if(chatOpen && !chatGreeted){
+    chatGreeted = true;
+    addChatBubble("bot", "Hi! I'm BINSMEN.AI. Ask me a question, or tap one of these to get started:");
+    renderQuickReplies();
+    document.getElementById("chatInput").focus();
+  }
+}
+
+function renderQuickReplies(){
+  const row = document.getElementById("chatQuickReplies");
+  row.innerHTML = "";
+  CHAT_QUICK_REPLIES.forEach(q=>{
+    const btn = document.createElement("button");
+    btn.textContent = q;
+    btn.addEventListener("click", ()=>{
+      addChatBubble("user", q);
+      respondToChat(q);
+    });
+    row.appendChild(btn);
+  });
+}
+
+function addChatBubble(sender, text){
+  const messages = document.getElementById("chatMessages");
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble " + sender;
+  bubble.textContent = text;
+  messages.appendChild(bubble);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+const OFF_TOPIC_REPLIES = [
+  "That's a bit outside what I can help with! I'm BINSMEN.AI — I only know about this app: adding items, packing, spending, savings, the Chamber, and your account. Try asking me one of those!",
+  "Hmm, that's not something I have an answer for — I'm built specifically to help with using BINSMEN (items, packing, spending, the Chamber, accounts). Ask me about any of those!",
+  "I can only help with questions about the BINSMEN app itself, so I can't answer that one. Try asking how to add an item, log spending, or use the Chamber."
+];
+
+function findChatAnswer(query){
+  const q = query.toLowerCase();
+  let best = null;
+  let bestScore = 0;
+  CHAT_KB.forEach(entry=>{
+    let score = 0;
+    entry.keywords.forEach(k=>{
+      if(q.includes(k)) score += k.length;
+    });
+    if(score > bestScore){
+      bestScore = score;
+      best = entry;
+    }
+  });
+  if(best && bestScore >= 3) return best.answer;
+  return OFF_TOPIC_REPLIES[Math.floor(Math.random() * OFF_TOPIC_REPLIES.length)];
+}
+
+function respondToChat(query){
+  const messages = document.getElementById("chatMessages");
+  setTimeout(()=>{
+    addChatBubble("bot", findChatAnswer(query));
+  }, 350);
+}
+
+function sendChatMessage(){
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if(!text) return;
+  addChatBubble("user", text);
+  respondToChat(text);
+  input.value = "";
+}
+
+document.getElementById("chatInput").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") sendChatMessage();
+});
 
 initApp();
 </script>
